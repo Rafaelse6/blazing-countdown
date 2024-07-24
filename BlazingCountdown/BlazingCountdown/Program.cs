@@ -1,4 +1,3 @@
-using BlazingCountdown.Client.Pages;
 using BlazingCountdown.Components;
 
 var builder = WebApplication.CreateBuilder(args);
