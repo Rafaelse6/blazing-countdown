@@ -1,5 +1,34 @@
-﻿<h3>CountdownTimer</h3>
+﻿@using System.Globalization
+@rendermode InteractiveWebAssembly
+
+@inject IJSRuntime JsRuntime
+
+@if (!_renderedOnClient)
+{
+    <h5 class="text-white text-center my-3">Launching at: @(_launchTime.ToString("MMM dd, yyyy hh:mm:ss tt", new CultureInfo("en-US"))) BRT <small>(Brasilia Time)</small></h5>
+}
+else
+{
+    // Countdown timer display
+    <p class="text-white">Client time is: @(_clientTime.ToString("MMM dd, yyyy hh:mm:ss tt", new CultureInfo("en-US")))</p>
+}
 
 @code {
+    private DateTime _launchTime = new DateTime(2024, 07, 25, 19, 0, 0);
 
+    private DateTime _clientTime;
+
+    private bool _renderedOnClient;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isoDateTime = await JsRuntime.InvokeAsync<string>("window.getBrowserDateTime");
+            var clientDateTimeOffset = DateTimeOffset.Parse(isoDateTime);
+            _clientTime = clientDateTimeOffset.LocalDateTime;
+            _renderedOnClient = true;
+            StateHasChanged();
+        }
+    }
 }
