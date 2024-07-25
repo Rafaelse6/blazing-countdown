@@ -3,10 +3,15 @@
 @using BlazingCountdown.Components.Shared
 
 <PageTitle>Home</PageTitle>
+<div class="row pt-5">
+    <div class="col-sm-5 mx-auto d-flex flex-column gap-3">
+        <img src="logo.jpg" style="height: 150px;" class="mx-auto" alt="My Blazing Website logo" />
+        <h1 class="text-white text-center h4">My Blazing Website is launching soon</h1>
 
-<h1>My Blazing Website is launching soon</h1>
+        <CountdownTimer />
 
-<CountdownTimer />
-<NotifyForm />
+        <NotifyForm />
 
-<SocialLinks />
+        <SocialLinks />
+    </div>
+</div>
