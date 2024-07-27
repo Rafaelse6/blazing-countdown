@@ -1,5 +1,7 @@
 ﻿@using System.Globalization
+@implements IDisposable
 @rendermode InteractiveWebAssembly
+
 
 @inject IJSRuntime JsRuntime
 
@@ -10,15 +12,19 @@
 else
 {
     // Countdown timer display
-    <p class="text-white">Client time is: @(_clientTime.ToString("MMM dd, yyyy hh:mm:ss tt", new CultureInfo("en-US")))</p>
+    <p class="text-white">Client time is: @(_clientTimeUtc.ToString("MMM dd, yyyy hh:mm:ss tt", new CultureInfo("en-US")))</p>
+    <h3 class="text-white">Remaining Time is: @(_remainingTime)</h3>
 }
 
 @code {
-    private DateTime _launchTime = new DateTime(2024, 07, 25, 19, 0, 0);
+    private static DateTime _launchTime = new DateTime(2024, 07, 29, 19, 0, 0);
 
-    private DateTime _clientTime;
+    private DateTime _launchTimeUtc = _launchTime.ToUniversalTime();
+    private DateTime _clientTimeUtc;
 
     private bool _renderedOnClient;
+    private TimeSpan _remainingTime = TimeSpan.Zero;
+    private Timer? _timer;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -26,9 +32,23 @@ else
         {
             var isoDateTime = await JsRuntime.InvokeAsync<string>("window.getBrowserDateTime");
             var clientDateTimeOffset = DateTimeOffset.Parse(isoDateTime);
-            _clientTime = clientDateTimeOffset.LocalDateTime;
+            _clientTimeUtc = clientDateTimeOffset.LocalDateTime;
             _renderedOnClient = true;
-            StateHasChanged();
+            _timer = new Timer(UpdateCountdown, state: null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
         }
     }
+
+    private void UpdateCountdown(object? state)
+    {
+        _clientTimeUtc = _clientTimeUtc.AddSeconds(1);
+        _remainingTime = _launchTimeUtc - _clientTimeUtc;
+
+        if (_remainingTime <= TimeSpan.Zero)
+        {
+            _timer!.Dispose();
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose() => _timer?.Dispose();
 }
