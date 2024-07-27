@@ -11,9 +11,34 @@
 }
 else
 {
-    // Countdown timer display
-    <p class="text-white">Client time is: @(_clientTimeUtc.ToString("MMM dd, yyyy hh:mm:ss tt", new CultureInfo("en-US")))</p>
-    <h3 class="text-white">Remaining Time is: @(_remainingTime)</h3>
+    <div class="row">
+        <div class="col">
+            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                <span class="">@_remainingTime.Days.PadLeftExtension()</span>
+                <span class="">"Days"</span>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                <span class="">@_remainingTime.Hours.PadLeftExtension()</span>
+                <span class="">"Hours"</span>
+            </div>
+        </div>
+        <div class="col">
+            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                <span class="">@_remainingTime.Minutes.PadLeftExtension()</span>
+                <span class="">"Minutes"</span>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                <span class="">@_remainingTime.Seconds.PadLeftExtension()</span>
+                <span class="">"Seconds"</span>
+            </div>
+        </div>
+    </div>
 }
 
 @code {
