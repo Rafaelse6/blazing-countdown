@@ -11,38 +11,45 @@
 }
 else
 {
-    <div class="row">
-        <div class="col">
-            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
-                <span class="">@_remainingTime.Days.PadLeftExtension()</span>
-                <span class="">"Days"</span>
+    if (!_launched)
+    {
+        <div class="row">
+            <div class="col">
+                <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                    <span class="">@_remainingTime.Days.PadLeftExtension()</span>
+                    <span class="">"Days"</span>
+                </div>
             </div>
-        </div>
 
-        <div class="col">
-            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
-                <span class="">@_remainingTime.Hours.PadLeftExtension()</span>
-                <span class="">"Hours"</span>
+            <div class="col">
+                <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                    <span class="">@_remainingTime.Hours.PadLeftExtension()</span>
+                    <span class="">"Hours"</span>
+                </div>
             </div>
-        </div>
-        <div class="col">
-            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
-                <span class="">@_remainingTime.Minutes.PadLeftExtension()</span>
-                <span class="">"Minutes"</span>
+            <div class="col">
+                <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                    <span class="">@_remainingTime.Minutes.PadLeftExtension()</span>
+                    <span class="">"Minutes"</span>
+                </div>
             </div>
-        </div>
 
-        <div class="col">
-            <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
-                <span class="">@_remainingTime.Seconds.PadLeftExtension()</span>
-                <span class="">"Seconds"</span>
+            <div class="col">
+                <div class="time-section bg-white d-flex flex-column justify-content-center align-items-center">
+                    <span class="">@_remainingTime.Seconds.PadLeftExtension()</span>
+                    <span class="">"Seconds"</span>
+                </div>
             </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <h2 class="text-center text-white my-3">Webiste is launched. Please refresh the page</h2>
+    }
 }
 
 @code {
-    private static DateTime _launchTime = new DateTime(2024, 07, 29, 19, 0, 0);
+    private static DateTime _launchTime = new DateTime(2024, 07, 30, 19, 0, 0);
 
     private DateTime _launchTimeUtc = _launchTime.ToUniversalTime();
     private DateTime _clientTimeUtc;
@@ -50,6 +57,7 @@ else
     private bool _renderedOnClient;
     private TimeSpan _remainingTime = TimeSpan.Zero;
     private Timer? _timer;
+    private bool _launched;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -71,6 +79,7 @@ else
         if (_remainingTime <= TimeSpan.Zero)
         {
             _timer!.Dispose();
+            _launched = true;
         }
         InvokeAsync(StateHasChanged);
     }
